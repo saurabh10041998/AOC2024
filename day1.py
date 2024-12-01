@@ -2,14 +2,14 @@ import heapq
 from collections import Counter
 from typing import List
 from typing import Tuple
-from typing import Self
+from typing import Iterator
+
 
 class Container:
     def __init__(self, input_s: str) -> None:
         self.data = input_s
         self.list1: List[int] = []
         self.list2: List[int] = []
-
 
     def seed(self) -> None:
         for line in self.data.split("\n"):
@@ -21,7 +21,7 @@ class Container:
             heapq.heappush(self.list1, int(i1))
             heapq.heappush(self.list2, int(i2))
 
-    def __iter__(self) -> Self:
+    def __iter__(self) -> Iterator[Tuple[int, int]]:
         return self
 
     def __next__(self) -> Tuple[int, int]:
@@ -55,4 +55,3 @@ def part2(input_s: str) -> int:
 
     counter = Counter(lst2)
     return sum(i * counter[i] for i in lst1)
-
