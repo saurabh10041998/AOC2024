@@ -25,8 +25,10 @@ class Levels:
 
         if self.seq[0] < self.seq[1]:
             return LevelType.INCREASING
+
         elif self.seq[0] > self.seq[1]:
             return LevelType.DECREASING
+
         else:
             return LevelType.FLAT
 
@@ -36,25 +38,25 @@ class Levels:
 
     def is_safe(self) -> bool:
         typ = self._guess_type()
-        match typ:
-            case LevelType.FLAT:
-                return False
-            case _:
-                if typ == LevelType.INCREASING:
-                    return all(
-                        [
-                            self._safe_diff(x2, x1) for (x1, x2)
-                            in zip(self.seq, self.seq[1:])
-                        ]
-                    )
-                else:  # LevelType.DECREASING
-                    return all(
-                        [
-                            self._safe_diff(x1, x2) for (x1, x2)
-                            in zip(self.seq, self.seq[1:])
-                        ]
-                    )
-        raise NotImplementedError(f"Not implemented for {self.seq=}")
+
+        if typ == LevelType.FLAT:
+            return False
+
+        elif typ == LevelType.INCREASING:
+            return all(
+                [
+                    self._safe_diff(x2, x1) for (x1, x2)
+                    in zip(self.seq, self.seq[1:])
+                ]
+            )
+
+        else:   # LevelType.DECREASING
+            return all(
+                [
+                    self._safe_diff(x1, x2) for (x1, x2)
+                    in zip(self.seq, self.seq[1:])
+                ]
+            )
 
 
 def part1(input_s: str) -> int:
