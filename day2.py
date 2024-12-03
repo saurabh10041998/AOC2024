@@ -1,5 +1,4 @@
 import sys
-from typing import Tuple
 from typing import Type
 from typing import Sequence
 from enum import Enum
@@ -68,40 +67,14 @@ class Levels:
                 ]
             )
 
-    def unsafe_at(self) -> Tuple[int, int]:
-        assert not self.is_safe()
-
-        typ = self._guess_type()
-
-        if typ == LevelType.FLAT:
-            return (0, 1)
-
-        elif typ == LevelType.INCREASING:
-            curr_idx = 1
-            while curr_idx < len(self.seq):
-                prev_idx = curr_idx - 1
-
-                if not self._safe_diff(
-                    self.seq[curr_idx],
-                    self.seq[prev_idx]
-                ):
-                    return (prev_idx, curr_idx)
-
-                curr_idx += 1
-
-        else:  # LevelType.DECREASING
-            curr_idx = 1
-            while curr_idx < len(self.seq):
-                prev_idx = curr_idx - 1
-
-                if not self._safe_diff(
-                    self.seq[prev_idx],
-                    self.seq[curr_idx]
-                ):
-                    return (prev_idx, curr_idx)
-
-                curr_idx += 1
-        raise AssertionError("Should not reach here for unsafe sequence")
+    def is_safe_v2(self) -> bool:
+        if self.is_safe():
+            return True
+        for i in range(len(self.seq)):
+            s1 = self.skip_lvl(self.seq, i)
+            if s1.is_safe():
+                return True
+        return False
 
 
 def part1(input_s: str) -> int:
@@ -119,13 +92,6 @@ def part2(input_s: str) -> int:
     for line in input_s.split("\n"):
         if line:
             s = Levels(tuple(int(x) for x in line.split()))
-
-            if s.is_safe():
+            if s.is_safe_v2():
                 ans += 1
-            else:
-                lv1, lv2 = s.unsafe_at()
-                s1 = s.skip_lvl(s.seq, lv1)
-                s2 = s.skip_lvl(s.seq, lv2)
-                if s1.is_safe() or s2.is_safe():
-                    ans += 1
     return ans
