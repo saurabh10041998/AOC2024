@@ -17,12 +17,11 @@ def part2(input_s: str) -> int:
     ans = 0
     enabled = True
     for inst, op1, op2 in re.findall(PART2_REG, input_s):
-        match inst:
-            case "do()":
-                enabled = True
-            case "don't()":
-                enabled = False
-            case _:
-                if enabled:
-                    ans += int(op1) * int(op2)
+        if inst == "do()":
+            enabled = True
+        elif inst == "don't()":
+            enabled = False
+        else:
+            if enabled:
+                ans += int(op1) * int(op2)
     return ans
